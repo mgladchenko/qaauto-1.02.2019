@@ -8,11 +8,13 @@ import org.testng.annotations.Test;
 
 public class LoginTests {
     WebDriver driver;
+    LandingPage landingPage;
 
     @BeforeMethod
     public void beforeMethod(){
         driver = new ChromeDriver();
         driver.get("https://www.linkedin.com/");
+        landingPage = new LandingPage(driver);
     }
 
     @AfterMethod
@@ -24,47 +26,55 @@ public class LoginTests {
     public Object[][] validData() {
         return new Object[][]{
                 { "linkedin.tst.yanina@gmail.com", "Test123!" },
-                { "linkedin.TST.yanina@gmail.com", "Test123!" },
-                { " linkedin.tst.yanina@gmail.com ", "Test123!" }
+               // { "linkedin.TST.yanina@gmail.com", "Test123!" },
+               // { " linkedin.tst.yanina@gmail.com ", "Test123!" }
         };
     }
 
-    @Test(dataProvider = "validData")
+    //@Test(dataProvider = "validData")
     public void successfulLoginTest(String userEmail, String userPassword) {
-        LandingPage landingPage = new LandingPage(driver);
         Assert.assertTrue(landingPage.isPageLoaded(),
                 "Landing page is not loaded.");
 
-        landingPage.login(userEmail, userPassword);
-
-        HomePage homePage = new HomePage(driver);
+        HomePage homePage = landingPage.loginToHomePage(userEmail, userPassword);
         Assert.assertTrue(homePage.isPageLoaded(),
                 "Home page did not load after Login.");
     }
 
     @Test
     public void negativeLoginReturnedToLandingTest() {
-        LandingPage landingPage = new LandingPage(driver);
         Assert.assertTrue(landingPage.isPageLoaded(),
                 "Landing page is not loaded.");
 
-        landingPage.login("a@b.c", "");
+        landingPage.loginToLandingPage("a@b.c", "");
         Assert.assertTrue(landingPage.isPageLoaded(),
                 "Landing page is not loaded.");
     }
 
-    @Test
-    public void negativeLoginReturnedToLoginSubmitTest() {
-        LandingPage landingPage = new LandingPage(driver);
+    @DataProvider
+    public Object[][] invalidData() {
+        return new Object[][]{
+                { "linkedin.tst.yanina@gmail.com", "12345", "",  "Hmm, that's not the right password. Please try again or request a new one."},
+        };
+    }
+
+    @Test(dataProvider = "invalidData")
+    public void negativeLoginReturnedToLoginSubmitTest(String userEmail,
+                                                       String userPassword,
+                                                       String emailValidationMessage,
+                                                       String passwordValidationMessage) {
         Assert.assertTrue(landingPage.isPageLoaded(),
                 "Landing page is not loaded.");
 
-        landingPage.login("linkedin.tst.yanina@gmail.com", "12345");
-        LoginSubmitPage loginSubmitPage = new LoginSubmitPage(driver);
+        LoginSubmitPage loginSubmitPage = landingPage.loginToLoginSubmitPage(userEmail, userPassword);
         Assert.assertTrue(loginSubmitPage.isPageLoaded(),
                 "loginSubmitPage page is not loaded.");
+
+        Assert.assertEquals(loginSubmitPage.getEmailValidationMessageText(),
+                emailValidationMessage,
+                "Wrong validation message for email field.");
         Assert.assertEquals(loginSubmitPage.getPasswordValidationMessageText(),
-                "Hmm, that's not the right password. Please try again or request a new one.",
+                passwordValidationMessage,
                 "Wrong validation message for password field.");
     }
 
