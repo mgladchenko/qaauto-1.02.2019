@@ -1,5 +1,6 @@
 package page;
 
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;
@@ -40,10 +41,9 @@ public class RequestPasswordResetPage {
         String message = gMailService.waitMessage(messageSubject, messageTo, messageFrom, 180);
         System.out.println("Content: " + message);
 
-        String resetPasswordUrl = null;// ToDo: find URL
+        String resetPasswordUrl = StringUtils.substringBetween(message, "href=\"",
+                "\" style=\"cursor:pointer;color:#008CC9;-webkit-text-size-adjust:100%;display:inline-block;text-decoration:none;-ms-text-size-adjust:100%;\">Reset my password");
         driver.get(resetPasswordUrl);
-
-
 
     }
 }
