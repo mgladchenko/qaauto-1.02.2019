@@ -9,8 +9,14 @@ public class BasePage {
     protected WebDriver driver;
     protected static String resetPasswordUrl;
 
-    protected void waitUntilElementIsClickable(WebElement webElement) {
-        WebDriverWait wait = new WebDriverWait(driver, 5);
+    protected void waitUntilElementIsClickable(WebElement webElement, int timeoutInSeconds) {
+        WebDriverWait wait = new WebDriverWait(driver, timeoutInSeconds);
         wait.until(ExpectedConditions.elementToBeClickable(webElement));
     }
+
+    protected void waitUntilElementIsClickable(WebElement webElement) {
+        waitUntilElementIsClickable(webElement, 5);
+    }
+
+
 }
