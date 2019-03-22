@@ -12,8 +12,8 @@ public class LoginTests extends BaseTest {
     public Object[][] validData() {
         return new Object[][]{
                 { "linkedin.tst.yanina@gmail.com", "Test123!" },
-               // { "linkedin.TST.yanina@gmail.com", "Test123!" },
-               // { " linkedin.tst.yanina@gmail.com ", "Test123!" }
+                { "linkedin.TST.yanina@gmail.com", "Test123!" },
+                { " linkedin.tst.yanina@gmail.com ", "Test123!" }
         };
     }
 
