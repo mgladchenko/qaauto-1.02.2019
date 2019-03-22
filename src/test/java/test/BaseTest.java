@@ -7,7 +7,7 @@ import org.testng.annotations.BeforeMethod;
 import page.LandingPage;
 
 public class BaseTest {
-    WebDriver driver;
+    private WebDriver driver;
     LandingPage landingPage;
 
     @BeforeMethod
